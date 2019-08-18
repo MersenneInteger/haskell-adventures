@@ -60,3 +60,114 @@ length' :: (Num b) => [a] -> b
 length' [] = 0
 length' (_:xs) = 1 + length' xs
 
+--sum function using recursion
+sum' :: (Num a) => [a] -> a
+sum' [] = 0
+sum' (x:xs) = x + sum' xs
+
+capital :: String -> String
+capital "" = "Empty string"
+capital all@(x:xs) = "The first letter of " ++ all ++ " is " ++ [x]
+
+-- Guards
+bmiTell :: (RealFloat) a => a -> String
+bmiTell bmi
+    | bmi <= 18.5 = "You're underweight"
+    | bmi <= 25.0 = "Normal"
+    | bmi <= 30.0 = "Slightly overweight"
+    | otherwise = "You're really fat"
+
+bmiCalculator :: (RealFloat a) => a -> a -> String
+bmiCalculator weight height
+    | weight / height ^ 2 <= 18.5 = "You're underweight"
+    | weight / height ^ 2 <= 25.0 = "You're normal"
+    | weight / height ^ 2 <= 30.0 = "You're slightly overweight"
+    | otherwise                   = "You're really fat"
+
+--implementing max with guards
+max' :: (Ord a) => a -> a -> a
+max' a b
+    | a > b = a
+    | otherwise = b
+
+--in one line:
+--max' a b | a > b = a | otherwise = b
+
+myCompare :: (Ord a) => a -> a -> Ordering
+a `myCompare` b
+    | a > b     = GT
+    | a == b    = EQ
+    | otherwise = LT
+
+--where
+bmiCalculator2 :: (RealFloat a) => a -> a -> String
+bmiCalculator2 weight height
+    | bmi <= 18.5 = "You're underweight"
+    | bmi <= 25.0 = "You're normal"
+    | bmi <= 30.0 = "You're slightly overweight"
+    | otherwise                   = "You're really fat"
+    where bmi = weight / height ^ 2
+
+--or
+bmiTell2 :: (RealFloat a) => a -> a -> String  
+bmiTell2 weight height  
+    | bmi <= skinny = "You're underweight, you emo, you!"  
+    | bmi <= normal = "You're supposedly normal. Pffft, I bet you're ugly!"  
+    | bmi <= fat    = "You're fat! Lose some weight, fatty!"  
+    | otherwise     = "You're a whale, congratulations!"  
+    where bmi = weight / height ^ 2
+          skinny = 18.5
+          normal = 25.0
+          fat = 30.0
+
+--get initials
+initials :: String -> String -> String
+initials firstName lastName = [f] ++ "." ++ [l] ++ "."
+    where (f:_) = firstName
+          (l:_) = lastName
+        
+myInitials = initials "Spike" "Speigel"
+
+--another bmi calculator
+calcBmis :: (RealFloat a) => [(a, a)] -> [a]  
+calcBmis xs = [bmi w h | (w, h) <- xs]  
+    where bmi weight height = weight / height ^ 2
+
+
+--let bindings
+--let bindings are expressions where where bindings are just syntactic constructs
+--this means let bindings can be used anywhere, like in other expressions
+cylinder :: (RealFloat a) => a -> a -> a
+cylinder r h =
+    let sideArea = 2 * pi * r * h
+        topArea = pi * r^2
+    in sideArea + 2 * topArea
+
+randomFun = 4 * (let a = 9 in a + 1) + 2
+squares = [let square x = x * x in (square 5, square 3, square 8)]
+--separate bindings with semicolons
+randomFun2 = (let a = 100; b = 200; c = 300 in a*b*c, let foo="Hey "; bar = "there!" in foo ++ bar)
+
+calcBmiWithLet :: (RealFloat a) => [(a,a)] -> [a]
+calcBmiWithLet xs = [bmi | (w,h) <- xs, let bmi = w/h^2]
+
+--case expressions
+
+--case expression of pattern -> result  
+--                   pattern -> result  
+--                   pattern -> result  
+--                   ...  
+
+head2 :: [a] -> a
+head2 [] = error "error: empty list"
+head2 (x:_) = x
+
+head3 :: [a] -> a
+head3 xs = case xs of []-> error "error: empty list"
+    (x:_) -> x
+
+
+describeList :: [a] -> String
+describeList xs = "The list is " ++ case xs of [] -> "empty."
+                                               [x] -> "a singleton list."
+                                               xs -> "a longer list."
